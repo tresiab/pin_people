@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+￼
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+    /* 100% of the screen height */
+    #map { height: 100vh; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Users Locations</h2>
+<div id="map"></div>
+
+<!-- Safe JSON embedding -->
+{{ users|json_script:"user-data" }}
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors',
+        noWrap: true,
+        worldCopyJump: false
+    }).addTo(map);
+
+    const data = JSON.parse(document.getElementById('user-data').textContent);
+    data.forEach(u => {
+        if (u.latitude && u.longitude) {
+            L.marker([u.latitude, u.longitude])
+                .addTo(map)
+                .bindPopup(`<b>${u.user__username}</b>`);
+        }
+    });
+</script>
+{% endblock %}
