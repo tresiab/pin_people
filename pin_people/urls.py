@@ -17,11 +17,15 @@ Including another URLconf
 
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from users.admin import admin_site
 from users.views import register_view
 
 urlpatterns = [
+    # permanent=False return HTTP 302 instead of HTTP 301
+    # 302 - because users may later go to / again after logging out
+    path("", RedirectView.as_view(url="/login/", permanent=False)),
     path("admin/", admin_site.urls),
     path("users/", include("users.urls")),
     path("login/", auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
