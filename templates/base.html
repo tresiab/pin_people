@@ -24,16 +24,20 @@
             <nav>
             {% block navbar %}
                 {% if user.is_authenticated %}
-                    <span>Hello, <a href="{% url 'profile' %}">{{ user.first_name|default:user.username }}</a></span> |
+                    {% if user.is_superuser %}
+                        <span>WELCOME.  <a href="{% url 'admin:index' %}">ADMIN SITE</a></span> |
+                    {% else %}
+                        <span>WELCOME, <a href="{% url 'profile' %}">{{ user.first_name|default:user.username|upper }}</a></span> |
+                    {% endif %}
                     <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" style="background:none; border:none; color:#007bff; cursor:pointer;">
-                            Log Out
+                            LOG OUT
                         </button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login' %}">Log In</a> |
-                    <a href="{% url 'register' %}">Register</a>
+                    <a href="{% url 'login' %}">LOG IN</a> |
+                    <a href="{% url 'register' %}">REGISTER</a>
                 {% endif %}
             {% endblock %}
             </nav>

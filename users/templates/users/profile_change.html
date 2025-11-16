@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block navbar %}
-<span>Back to, <a href="{% url 'location' %}">Locations</a></span> |
+<span>BACK TO, <a href="{% url 'location' %}">LOCATIONS</a></span> |
 <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
     {% csrf_token %}
     <button type="submit" style="background:none; border:none; color:#007bff; cursor:pointer;">
-        Log Out
+        LOG OUT
     </button>
 </form>
 {% endblock %}
@@ -40,4 +40,24 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    // Only set default values for latitude and longitude when both are not set yet
+    if (!document.getElementById("id_latitude").value && !document.getElementById("id_longitude").value) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    document.getElementById("id_latitude").value = position.coords.latitude.toFixed(6);
+                    document.getElementById("id_longitude").value = position.coords.longitude.toFixed(6);
+                },
+                function(error) {
+                    console.warn("Error fetching location:", error.message);
+                }
+            );
+        }
+    }
+</script>
 {% endblock %}
