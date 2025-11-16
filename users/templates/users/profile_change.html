@@ -7,38 +7,32 @@
 {% endblock %}
 
 {% block navbar %}
-<span>BACK TO, <a href="{% url 'location' %}">LOCATIONS</a></span> |
-<form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" style="background:none; border:none; color:#007bff; cursor:pointer;">
-        LOG OUT
-    </button>
-</form>
+<div class="nav-left">
+    <span>BACK TO, <a href="{% url 'location' %}">LOCATIONS</a></span> |
+</div>
+<div class="nav-right">
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">
+            LOG OUT
+        </button>
+    </form>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4>Edit Profile</h4>
-                </div>
-                <form method="post">
-                {% csrf_token %}
-                    <div class="card-body">
-                        <table class="table table-borderless">
-                            {{ form.as_table }}
-                        </table>
-                    </div>
-                    <div class="card-footer text-end">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <a href="{% url 'user_detail' user.id %}" class="btn btn-secondary">Cancel</a>
-                    </div>
-                </form>
-            </div>
+<div class="profile-container">
+    <h2>Edit Profile</h2>
+    <form method="post">
+    {% csrf_token %}
+        <table class="table table-borderless">
+            {{ form.as_table }}
+        </table>
+        <div class="button-group">
+            <button type="submit">Save</button>
+            <a href="{% url 'user_detail' user.id %}" class="button">Cancel</a>
         </div>
-    </div>
+    </form>
 </div>
 {% endblock %}
 

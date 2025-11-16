@@ -1,1 +1,167 @@
 /* Define project wide CSS here */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #6b7280;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+header {
+    width: 100%;
+    background-color: #417690;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    color: #f5dd5d;
+    margin: 0;                /* remove default margin */
+    padding-left: 2rem;       /* push it to the right */
+    font-size: 2rem;          /* optional: increase font size */
+    font-weight: bold;        /* optional: make it bold */
+}
+
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffc;
+    padding: 0.5rem 2rem;
+    font-family: Arial, sans-serif;
+}
+
+/* Left side (welcome message) */
+.navbar .nav-left span {
+    font-weight: 500;
+    padding-right: 1rem;
+}
+
+.navbar a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Right side (logout/login/register) */
+.navbar .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Logout button styled like link */
+.navbar .nav-right button {
+    background: none;
+    border: none;
+    color: #2481b2;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.3s;
+    text-decoration: underline;
+}
+
+.navbar .nav-right button:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.navbar a,
+.navbar .nav-right button {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #fff;
+}
+
+.section-header {
+    color: white;               /* white text */
+    padding-left: 2rem;         /* push it to the right */
+    border-radius: 6px;         /* rounded corners */
+    font-size: 1rem;
+    margin-bottom: 1rem;        /* space below header */
+}
+
+footer {
+    background: #f8f9fa;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Reusable container style */
+.registration-container, .login-container, .profile-container {
+    background: white;
+    margin: 50px auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+button,
+.button {  /* include links with class "button" */
+    display: inline-block;        /* inline so they sit next to each other */
+    width: auto;                  /* allow flexible width */
+    min-width: 100px;
+    background: #2481b2;
+    color: white;
+    border: none;
+    padding: 5px 20px;           /* horizontal padding more for links */
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;        /* remove underline from link */
+    font-family: inherit;
+    font-size: 1rem;
+    margin-right: 10px;           /* space between buttons */
+    transition: background 0.3s;
+}
+
+button:hover,
+.button:hover {
+    background: #094d71;
+}
+
+button:not(.btn) {
+    border-radius: 5px;
+}
+
+/* Optional: container to align buttons */
+.button-group {
+    display: flex;
+    gap: 10px;                  /* spacing between buttons */
+    justify-content: center;
+}
+
+.user-info-table td.label {
+    text-align: right;
+    padding-right: 1rem;        /* spacing between label and value */
+    white-space: nowrap;        /* prevent labels from wrapping */
+}
+
+/* Optional: make values left-aligned (default) */
+.user-info-table td:not(.label) {
+    text-align: left;
+}
+
+.helptext {
+    display: block;
+    font-size: 0.875rem; /* slightly smaller */
+    color: #6b7280;      /* soft gray color */
+    margin-top: 0.25rem; /* small spacing above */
+}
+
+.registration-container ul {
+    display: block;
+    font-size: 0.875rem; /* slightly smaller */
+    color: #6b7280;      /* soft gray color */
+    margin-top: 0.25rem; /* small spacing above */
+}

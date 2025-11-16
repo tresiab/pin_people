@@ -21,23 +21,29 @@
             <h1>{% block header %}Pin People{% endblock %}</h1>
 
             <!-- Menu -->
-            <nav>
+            <nav class="navbar">
             {% block navbar %}
                 {% if user.is_authenticated %}
-                    {% if user.is_superuser %}
-                        <span>WELCOME.  <a href="{% url 'admin:index' %}">ADMIN SITE</a></span> |
-                    {% else %}
-                        <span>WELCOME, <a href="{% url 'profile' %}">{{ user.first_name|default:user.username|upper }}</a></span> |
-                    {% endif %}
-                    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" style="background:none; border:none; color:#007bff; cursor:pointer;">
-                            LOG OUT
-                        </button>
-                    </form>
+                    <div class="nav-left">
+                        {% if user.is_superuser %}
+                            <span>WELCOME.  <a href="{% url 'admin:index' %}">ADMIN SITE</a></span> |
+                        {% else %}
+                            <span>WELCOME, <a href="{% url 'profile' %}">{{ user.first_name|default:user.username|upper }}</a></span> |
+                        {% endif %}
+                    </div>
+                    <div class="nav-right">
+                        <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">
+                                LOG OUT
+                            </button>
+                        </form>
+                    </div>
                 {% else %}
-                    <a href="{% url 'login' %}">LOG IN</a> |
-                    <a href="{% url 'register' %}">REGISTER</a>
+                    <div class="nav-right">
+                        <a href="{% url 'login' %}">LOG IN</a> |
+                        <a href="{% url 'register' %}">REGISTER</a>
+                    </div>
                 {% endif %}
             {% endblock %}
             </nav>
