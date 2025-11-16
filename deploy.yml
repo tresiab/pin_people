@@ -1,0 +1,109 @@
+---
+- name: Deploy Django app with PostgreSQL locally
+  hosts: localhost
+  connection: local
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Ensure python3 and venv support are installed
+      package:
+        name:
+          - python3
+          - python3-venv
+          - python3-pip
+          - python3-docker
+        state: present
+      become: yes
+
+    - name: Pull PostgreSQL Docker image
+      community.docker.docker_image:
+        name: postgres
+        tag: latest
+        source: pull
+
+    - name: Run PostgreSQL container
+      community.docker.docker_container:
+        name: "{{ docker_postgres_name }}"
+        image: postgres:latest
+        state: started
+        restart_policy: always
+        env:
+          POSTGRES_USER: "{{ postgres_user }}"
+          POSTGRES_PASSWORD: "{{ postgres_password }}"
+          POSTGRES_DB: "{{ postgres_db }}"
+        ports:
+          - "{{ postgres_port }}:5432"
+        volumes:
+          - "{{ docker_postgres_volume }}:/var/lib/postgresql/data"
+
+    - name: Wait for PostgreSQL to be ready
+      wait_for:
+        host: 127.0.0.1
+        port: "{{ postgres_port }}"
+        delay: 5
+        timeout: 30
+        state: started
+
+    - name: Ensure project directory exists
+      file:
+        path: "{{ project_dir }}"
+        state: directory
+
+    - name: Ensure Python virtual environment exists
+      command: "{{ python_version }} -m venv {{ venv_dir }}"
+      args:
+        creates: "{{ venv_dir }}/bin/activate"
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ requirements_file }}"
+        virtualenv: "{{ venv_dir }}"
+        virtualenv_python: "{{ python_version }}"
+
+    - name: Run Django migrations
+      command: "{{ venv_dir }}/bin/python manage.py migrate"
+      args:
+        chdir: "{{ project_dir }}"
+      environment:
+        DJANGO_SETTINGS_MODULE: "pin_people.settings"
+
+    - name: Check if Django superuser exists
+      shell: |
+        {{ venv_dir }}/bin/python manage.py shell --no-startup -c "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(username='{{ django_superuser_username }}').exists())"
+      args:
+        chdir: "{{ project_dir }}"
+      register: django_superuser_check
+      changed_when: false
+
+    - name: Debug superuser check
+      debug:
+        var: django_superuser_check.stdout
+
+    - name: Create Django superuser if missing
+      shell: |
+        {{ venv_dir }}/bin/python manage.py createsuperuser \
+          --noinput \
+          --username {{ django_superuser_username }} \
+          --email {{ django_superuser_email }}
+      args:
+        chdir: "{{ project_dir }}"
+      when: django_superuser_check.stdout | trim | regex_search('False$')
+      environment:
+        DJANGO_SUPERUSER_PASSWORD: "{{ django_superuser_password }}"
+
+    - name: Load initial data if requested AND fixtures exist
+      command: "{{ venv_dir }}/bin/python manage.py loaddata users/fixtures/initial_data.json"
+      args:
+        chdir: "{{ project_dir }}"
+      when:
+        - load_initial_data | bool
+        - lookup('ansible.builtin.fileglob', project_dir + '/users/fixtures/initial_data.json', errors='ignore')
+      environment:
+        DJANGO_SETTINGS_MODULE: "pin_people.settings"
+
+    - name: Run Django development server in background
+      shell: |
+        nohup {{ venv_dir }}/bin/python manage.py runserver 0.0.0.0:8000 > django.log 2>&1 &
+      args:
+        chdir: "{{ project_dir }}"

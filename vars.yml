@@ -1,0 +1,25 @@
+# ────────────────────────────────
+# PROJECT PATHS
+# ────────────────────────────────
+project_dir: "~/git/pin_people"
+venv_dir: "{{ project_dir }}/venv"
+requirements_file: "{{ project_dir }}/requirements.txt"
+python_version: "python3"
+
+# ────────────────────────────────
+# POSTGRES DOCKER SETTINGS
+# ────────────────────────────────
+docker_postgres_name: "pin_people"
+docker_postgres_volume: "pin_people_data"
+postgres_user: "pin_people_user"
+postgres_password: "pass"
+postgres_db: "pin_people"
+postgres_port: 5433
+load_initial_data: true
+
+# ────────────────────────────────
+# DJANGO SUPERUSER
+# ────────────────────────────────
+django_superuser_username: "admin"
+django_superuser_email: "admin@example.com"
+django_superuser_password: "mySuperSecret"

@@ -1,0 +1,27 @@
+- name: Cleanup Django app
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Stop Django development server
+      shell: |
+        # find the PID of the running Django server and kill it
+        PID=$(lsof -ti tcp:8000)
+        if [ -n "$PID" ]; then
+          kill $PID
+        fi
+      args:
+        chdir: "{{ project_dir }}"
+
+    - name: Remove Postgres container
+      community.docker.docker_container:
+        name: "{{ docker_postgres_name }}"
+        state: absent
+        force_kill: true
+
+    - name: Remove postgres data volume
+      community.docker.docker_volume:
+        name: "{{ docker_postgres_volume }}"
+        state: absent
