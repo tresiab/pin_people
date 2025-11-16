@@ -1,0 +1,92 @@
+[
+    {
+        "model": "users.User",
+        "pk": 2,
+        "fields": {
+            "username": "johndoe",
+            "first_name": "John",
+            "last_name": "Doe",
+            "is_active": true,
+            "is_staff": true,
+            "is_superuser": false,
+            "password": "pbkdf2_sha256$1000000$toSejwuEzPVT9LPbbseopQ$Pwo16TDkZ+Eto/38Kt5xKRXIcWX4vm6poUvnlJEDLJA=",
+            "email": "johndoe@example.com",
+            "phone_number": "+27 82 555 0100",
+            "address": "42 Table Mountain Rd, Cape Town, 8001",
+            "latitude": -33.9248685,
+            "longitude": 18.4240553
+        }
+    },
+    {
+        "model": "users.User",
+        "pk": 3,
+        "fields": {
+            "username": "alice123",
+            "first_name": "Alice",
+            "last_name": "Wonderland",
+            "is_active": true,
+            "is_staff": false,
+            "is_superuser": false,
+            "password": "pbkdf2_sha256$1000000$toSejwuEzPVT9LPbbseopQ$Pwo16TDkZ+Eto/38Kt5xKRXIcWX4vm6poUvnlJEDLJA=",
+            "email": "alice123@example.com",
+            "phone_number": "555-0123",
+            "address": "34 Elm Street, Springfield, IL 62704",
+            "latitude": 39.799999,
+            "longitude": -89.650002
+        }
+    },
+    {
+        "model": "users.User",
+        "pk": 4,
+        "fields": {
+            "username": "thewizard42",
+            "first_name": "Wizard",
+            "last_name": "Oz",
+            "is_active": true,
+            "is_staff": false,
+            "is_superuser": false,
+            "password": "pbkdf2_sha256$1000000$toSejwuEzPVT9LPbbseopQ$Pwo16TDkZ+Eto/38Kt5xKRXIcWX4vm6poUvnlJEDLJA=",
+            "email": "thewizard42@example.com",
+            "phone_number": "7700 900123",
+            "address": "10 Downing Lane, London, SW1A 1AA",
+            "latitude": 51.503223,
+            "longitude": -0.127500
+        }
+    },
+    {
+        "model": "users.User",
+        "pk": 5,
+        "fields": {
+            "username": "supercoder",
+            "first_name": "Clark",
+            "last_name": "Kent",
+            "is_active": true,
+            "is_staff": true,
+            "is_superuser": false,
+            "password": "pbkdf2_sha256$1000000$toSejwuEzPVT9LPbbseopQ$Pwo16TDkZ+Eto/38Kt5xKRXIcWX4vm6poUvnlJEDLJA=",
+            "email": "supercoder@example.com",
+            "phone_number": "+999 1234 5678",
+            "address": "567 Maple Road, Toronto, ON M4B 1B3",
+            "latitude": 44.2873592,
+            "longitude": -76.7758057666667
+        }
+    },
+    {
+        "model": "users.User",
+        "pk": 6,
+        "fields": {
+            "username": "luna_moon",
+            "first_name": "Luna",
+            "last_name": "Moon",
+            "is_active": true,
+            "is_staff": false,
+            "is_superuser": false,
+            "password": "pbkdf2_sha256$1000000$toSejwuEzPVT9LPbbseopQ$Pwo16TDkZ+Eto/38Kt5xKRXIcWX4vm6poUvnlJEDLJA=",
+            "email": "lunamoon@example.com",
+            "phone_number": "+27 83 123 1234",
+            "address": "12 Independence Avenue, Windhoek, 9000",
+            "latitude": -22.559410,
+            "longitude": 17.083230
+        }
+    }
+]
