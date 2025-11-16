@@ -7,7 +7,11 @@ User = get_user_model()
 
 
 class UserModelTests(TestCase):
+
     def setUp(self):
+        """
+        Create a test user.
+        """
         self.user = User.objects.create(
             username="testuser",
             password="testpassword",
@@ -24,4 +28,27 @@ class UserModelTests(TestCase):
         )
 
     def test_user_str(self):
+        """
+        Test that the __str__ method of the User model
+        returns the username as its string representation.
+        """
         self.assertEqual(str(self.user), "testuser")
+
+    def test_to_dms(self):
+        """
+        Test that the to_dms() function correctly converts
+        latitude and longitude values into formatted
+        degrees–minutes–seconds (DMS) strings with the proper
+        directional indicators (N/S/E/W).
+        """
+        self.assertEqual(self.user.to_dms(self.user.latitude), "34°4'48\"S")
+        self.assertEqual(self.user.to_dms(self.user.latitude, "lat"), "34°4'48\"S")
+        self.assertEqual(self.user.to_dms(self.user.longitude, "lon"), "18°51'36\"E")
+
+    def test_position_property(self):
+        """
+        Test that the User model's position property returns
+        the correctly formatted latitude and longitude string
+        in degrees–minutes–seconds (DMS) format.
+        """
+        self.assertEqual(self.user.position, "34°4'48\"S 18°51'36\"E")
