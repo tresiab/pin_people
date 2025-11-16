@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
@@ -10,6 +11,13 @@ User = get_user_model()
 
 
 def register_view(request):
+    """
+    Handle user registration using a custom user creation form.
+    This view supports both GET and POST requests:
+    - GET: Displays an empty registration form.
+    - POST: Validates the submitted form and creates a new user if valid.
+      On successful registration, the user is redirected to the login page.
+    """
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -22,6 +30,9 @@ def register_view(request):
 
 @login_required(login_url="login")
 def location_view(request):
+    """
+    Render the locations page showing all users who have saved coordinates.
+    """
     users_qs = User.objects.exclude(latitude=None, longitude=None)
     users = []
     for u in users_qs:
@@ -52,6 +63,11 @@ def profile_view(request, user_id=None):
         user = get_object_or_404(User, pk=user_id)
     else:
         user = request.user
+
+    # Superuser can view anyone, regular users only themselves
+    if not request.user.is_superuser and request.user.id != user.id:
+        return HttpResponseForbidden("You are not allowed to view this profile.")
+
     return render(request, "users/profile.html", {"user": user})
 
 
@@ -65,6 +81,10 @@ def profile_change_view(request, user_id=None):
         user = get_object_or_404(User, pk=user_id)
     else:
         user = request.user
+
+    # Superuser can edit anyone, regular users only themselves
+    if not request.user.is_superuser and request.user.id != user.id:
+        return HttpResponseForbidden("You are not allowed to edit this profile.")
 
     if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance=user)
