@@ -3,6 +3,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+from .admin_filters import AdminLoginLogoutFilter
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 User = get_user_model()
@@ -47,7 +48,7 @@ class LogEntryAdmin(admin.ModelAdmin):
     """
 
     list_display = ("action_time", "user", "object_repr", "change_message", "action_flag")
-    list_filter = ("user", "action_flag")
+    list_filter = (AdminLoginLogoutFilter, "user", "action_flag")
     search_fields = ("change_message", "user__username", "object_repr")
 
     def get_queryset(self, request):
