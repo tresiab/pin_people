@@ -60,10 +60,10 @@ class CustomUserChangeFormTests(TestCase):
         """
         Create a test user.
         """
-        self.user = User.objects.create_user(
-            username="testuser",
+        self.user1 = User.objects.create_user(
+            username="testuser1",
             password="password123",
-            email="test@example.com",
+            email="user1@example.com",
             first_name="Test",
             last_name="User",
             phone_number="1234567890",
@@ -71,20 +71,25 @@ class CustomUserChangeFormTests(TestCase):
             latitude=-34.0,
             longitude=18.0,
         )
+        self.user2 = User.objects.create_user(
+            username="testuser2",
+            email="user2@example.com",
+            password="password123",
+        )
 
     def test_form_initialization(self):
         """
         Form should initialize correctly with a user instance.
         """
-        form = CustomUserChangeForm(instance=self.user)
-        self.assertEqual(form.initial["username"], self.user.username)
-        self.assertEqual(form.initial["email"], self.user.email)
-        self.assertEqual(form.initial["first_name"], self.user.first_name)
-        self.assertEqual(form.initial["last_name"], self.user.last_name)
-        self.assertEqual(form.initial["phone_number"], self.user.phone_number)
-        self.assertEqual(form.initial["address"], self.user.address)
-        self.assertEqual(form.initial["latitude"], self.user.latitude)
-        self.assertEqual(form.initial["longitude"], self.user.longitude)
+        form = CustomUserChangeForm(instance=self.user1)
+        self.assertEqual(form.initial["username"], self.user1.username)
+        self.assertEqual(form.initial["email"], self.user1.email)
+        self.assertEqual(form.initial["first_name"], self.user1.first_name)
+        self.assertEqual(form.initial["last_name"], self.user1.last_name)
+        self.assertEqual(form.initial["phone_number"], self.user1.phone_number)
+        self.assertEqual(form.initial["address"], self.user1.address)
+        self.assertEqual(form.initial["latitude"], self.user1.latitude)
+        self.assertEqual(form.initial["longitude"], self.user1.longitude)
 
     def test_form_valid_data_updates_user(self):
         """
@@ -92,7 +97,7 @@ class CustomUserChangeFormTests(TestCase):
         """
         data = {
             "username": "updateduser",
-            "password": self.user.password,  # leave password unchanged
+            "password": self.user1.password,  # leave password unchanged
             "email": "updated@example.com",
             "first_name": "Updated",
             "last_name": "User",
@@ -101,7 +106,7 @@ class CustomUserChangeFormTests(TestCase):
             "latitude": -33.9,
             "longitude": 18.4,
         }
-        form = CustomUserChangeForm(data=data, instance=self.user)
+        form = CustomUserChangeForm(data=data, instance=self.user1)
         self.assertTrue(form.is_valid())
         user = form.save()
         self.assertEqual(user.username, "updateduser")
@@ -119,9 +124,29 @@ class CustomUserChangeFormTests(TestCase):
         """
         data = {
             "username": "",
-            "password": self.user.password,
+            "password": self.user1.password,
             "email": "updated@example.com",
         }
-        form = CustomUserChangeForm(data=data, instance=self.user)
+        form = CustomUserChangeForm(data=data, instance=self.user1)
         self.assertFalse(form.is_valid())
         self.assertIn("username", form.errors)
+
+    def test_clean_email_valid(self):
+        """
+        Form with unique email address should update the user.
+        """
+        form = CustomUserChangeForm(
+            data={"username": self.user1.username, "email": "unique@example.com"}, instance=self.user1
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_clean_email_duplicate(self):
+        """
+        Form with a duplicate email address should be invalid.
+        """
+        form = CustomUserChangeForm(
+            data={"username": self.user1.username, "email": "user2@example.com"}, instance=self.user1
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("email", form.errors)
+        self.assertEqual(form.errors["email"][0], "This email is already in use.")
