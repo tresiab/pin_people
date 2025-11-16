@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
 
 from .admin_filters import AdminLoginLogoutFilter
 from .forms import CustomUserChangeForm, CustomUserCreationForm
@@ -9,7 +12,25 @@ from .forms import CustomUserChangeForm, CustomUserCreationForm
 User = get_user_model()
 
 
-@admin.register(User)
+class PinPeopleAdminSite(AdminSite):
+    """
+    Custom Django AdminSite for the pin_people project.
+    This custom admin site allows for project-wide customization of the admin header,
+    title, and "View site" link. All models should be registered with this admin site
+    instance instead of the default `admin.site` to apply these customizations.
+    """
+
+    site_header = "Pin People Administration"
+    site_title = "Pin People Admin"
+    site_url = settings.LOGIN_REDIRECT_URL
+
+
+admin_site = PinPeopleAdminSite(name="pin_people_admin")
+
+admin_site.register(Group)
+
+
+@admin.register(User, site=admin_site)
 class UserAdmin(BaseUserAdmin):
     """
     Custom configuration for the Django admin interface managing User objects.
@@ -41,7 +62,7 @@ except admin.sites.NotRegistered:
     pass
 
 
-@admin.register(LogEntry)
+@admin.register(LogEntry, site=admin_site)
 class LogEntryAdmin(admin.ModelAdmin):
     """
     Custom admin configuration for viewing and managing Django's built-in LogEntry records.
