@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
@@ -27,21 +27,34 @@ def location_view(request):
 
 
 @login_required(login_url="login")
-def profile_view(request):
-    return render(request, "users/profile.html", {"user": request.user})
+def profile_view(request, user_id=None):
+    """
+    Show a user's profile. If user_id is provided, show that user's profile;
+    otherwise, show the logged-in user's profile.
+    """
+    if user_id:
+        user = get_object_or_404(User, pk=user_id)
+    else:
+        user = request.user
+    return render(request, "users/profile.html", {"user": user})
 
 
 @login_required(login_url="login")
-def profile_change_view(request):
+def profile_change_view(request, user_id=None):
     """
-    Allow the logged in user to edit their profile.
+    Update a user's profile.  If user_id is provided, update that user's profile;
+    otherwise, update the logged-in user's profile.
     """
-    user = request.user
+    if user_id:
+        user = get_object_or_404(User, pk=user_id)
+    else:
+        user = request.user
+
     if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect("profile")
+            return redirect("user_detail", user_id=user.id)
     else:
         form = CustomUserChangeForm(instance=user)
-    return render(request, "users/profile_change.html", {"form": form})
+    return render(request, "users/profile_change.html", {"form": form, "user": user})

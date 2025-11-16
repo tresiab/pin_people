@@ -22,7 +22,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Your Profile</h4>
+                    <h4 class="mb-0">User's Profile</h4>
                 </div>
                 <div class="card-body">
                     <p><strong>Username:</strong> {{ user.username }}</p>
@@ -35,7 +35,7 @@
                     <p><strong>Longitude:</strong> {{ user.longitude|default:"-" }}</p>
                 </div>
                 <div class="card-footer text-end">
-                    <a href="{% url 'profile_change' %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'user_change' user.id %}" class="btn btn-primary">Edit</a>
                 </div>
             </div>
         </div>
