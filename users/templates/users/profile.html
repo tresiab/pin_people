@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}View Profile{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+<span>Back to, <a href="{% url 'location' %}">Locations</a></span> |
+<form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; color:#007bff; cursor:pointer;">
+        Log Out
+    </button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Your Profile</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email|default:"-" }}</p>
+                    <p><strong>First Name:</strong> {{ user.first_name|default:"-" }}</p>
+                    <p><strong>Last Name:</strong> {{ user.last_name|default:"-" }}</p>
+                    <p><strong>Phone Number:</strong> {{ user.phonenumber|default:"-" }}</p>
+                    <p><strong>Address:</strong> {{ user.address|default:"-" }}</p>
+                    <p><strong>Latitude:</strong> {{ user.latitude|default:"-" }}</p>
+                    <p><strong>Longitude:</strong> {{ user.longitude|default:"-" }}</p>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'profile_change' %}" class="btn btn-primary">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
