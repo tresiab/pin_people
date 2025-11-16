@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -20,10 +22,24 @@ def register_view(request):
 
 @login_required(login_url="login")
 def location_view(request):
-    users = User.objects.exclude(latitude=None, longitude=None).values(
-        "username", "latitude", "longitude"
-    )
-    return render(request, "users/location.html", {"users": list(users)})
+    users_qs = User.objects.exclude(latitude=None, longitude=None)
+    users = []
+    for u in users_qs:
+        users.append(
+            {
+                "id": u.id,
+                "username": u.username,
+                "latitude": float(u.latitude),
+                "longitude": float(u.longitude),
+                "position": u.position,
+            }
+        )
+    context = {
+        "users_json": json.dumps(list(users)),
+        "logged_in_user_id": request.user.id,
+        "is_superuser": request.user.is_superuser,
+    }
+    return render(request, "users/location.html", context)
 
 
 @login_required(login_url="login")

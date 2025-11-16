@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %}User Locations{% endblock %}
 
 {% block extra_css %}
@@ -31,12 +33,36 @@
         worldCopyJump: false
     }).addTo(map);
 
-    const data = JSON.parse(document.getElementById('user-data').textContent);
+    var userIcon = L.icon({
+        iconUrl: "{% static 'images/user-icon.png' %}",
+        iconSize: [40, 40], // adjust size
+        iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
+        popupAnchor: [0, -40] // where the popup should open relative to the iconAnchor
+    });
+
+    let data = {{ users_json|safe }};
+    let loggedInUserId = {{ logged_in_user_id }};
+    let isSuperuser = {{ is_superuser|yesno:"true,false" }};
+
     data.forEach(u => {
         if (u.latitude && u.longitude) {
-            L.marker([u.latitude, u.longitude])
+            // Start building popup content
+            let popupContent = `
+                <div style="text-align:center;">
+                    <strong>${u.username}</strong><br>
+                    <small>${u.position}</small><br>
+                </div>
+            `;
+
+            // Add profile link if superuser or popup is current user
+            if (isSuperuser || u.id === loggedInUserId) {
+                popupContent += `<a href="/users/${u.id}/">View Profile</a><br>`;
+            }
+
+            // Add marker with custom popup
+            L.marker([u.latitude, u.longitude], {icon: userIcon})
                 .addTo(map)
-                .bindPopup(`<b>${u.user__username}</b>`);
+                .bindPopup(popupContent);
         }
     });
 </script>
